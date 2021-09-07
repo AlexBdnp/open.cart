@@ -1,0 +1,55 @@
+<div class="row">
+  <div class="col-sm-6">
+    <h2>{{ text_new_customer }}</h2>
+    <p>{{ text_checkout }}</p>
+    {% if checkout_guest %}
+    <div class="radio">
+      <label> {% if account == 'guest' %}
+        <input type="radio" name="account" value="guest" checked="checked" id="fastorder_radio" />
+        {% else %}
+        <input type="radio" name="account" value="guest" id="fastorder_radio" />
+        {% endif %}
+        Заказать быстро (оставьте ваш номер):</label>
+          <form id="fastorder" action="index.php?route=checkout/fastorder" method="post">
+            <input type="tel" name="telephone" id="telephone" placeholder="+380...">
+            <input type="submit" value="OK" style="display: none;">
+          </form>
+    </div>
+    <div class="radio">
+      <label> {% if account == 'register' %}
+        <input type="radio" name="account" value="register" checked="checked" />
+        {% else %}
+        <input type="radio" name="account" value="register" />
+        {% endif %}
+        {{ text_register }}</label>
+    </div>
+    {% endif %}
+    <p>{{ text_register_account }}</p>
+    <input type="button" value="{{ button_continue }}" id="button-account" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
+  </div>
+  <script>
+    $(document).on('change', 'input[name=\'account\']', function() {
+      if(this.value == 'guest') {
+        $('#button-account').css('display', 'none')
+        $('#fastorder > input[type=\'submit\']').css('display', 'inline-block')
+      } else {
+        $('#button-account').css('display', 'block')
+        $('#fastorder > input[type=\'submit\']').css('display', 'none')
+      }
+    })
+    $('#fastorder_radio').trigger('click')
+  </script>
+  <div class="col-sm-6">
+    <h2>{{ text_returning_customer }}</h2>
+    <p>{{ text_i_am_returning_customer }}</p>
+    <div class="form-group">
+      <label class="control-label" for="input-email">{{ entry_email }}</label>
+      <input type="text" name="email" value="" placeholder="{{ entry_email }}" id="input-email" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="input-password">{{ entry_password }}</label>
+      <input type="password" name="password" value="" placeholder="{{ entry_password }}" id="input-password" class="form-control" />
+      <a href="{{ forgotten }}">{{ text_forgotten }}</a></div>
+    <input type="button" value="{{ button_login }}" id="button-login" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
+  </div>
+</div>
