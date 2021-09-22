@@ -1,5 +1,12 @@
 <?php
 class ModelCatalogProduct extends Model {
+
+  public function setHighlight($color, $product_id)
+  {
+    $sql = "REPLACE INTO " . DB_PREFIX . "product_highlight (product_id, color) VALUES ($product_id, '$color')";
+    $query = $this->db->query($sql);
+  }
+
 	public function addProduct($data) {
 		$this->db->query("INSERT INTO " . DB_PREFIX . "product SET model = '" . $this->db->escape($data['model']) . "', sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "', ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "', isbn = '" . $this->db->escape($data['isbn']) . "', mpn = '" . $this->db->escape($data['mpn']) . "', location = '" . $this->db->escape($data['location']) . "', quantity = '" . (int)$data['quantity'] . "', minimum = '" . (int)$data['minimum'] . "', subtract = '" . (int)$data['subtract'] . "', stock_status_id = '" . (int)$data['stock_status_id'] . "', date_available = '" . $this->db->escape($data['date_available']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "', points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "', status = '" . (int)$data['status'] . "', tax_class_id = '" . (int)$data['tax_class_id'] . "', sort_order = '" . (int)$data['sort_order'] . "', date_added = NOW(), date_modified = NOW()");
 
@@ -356,8 +363,14 @@ class ModelCatalogProduct extends Model {
 	}
 
 	public function getProducts($data = array()) {
-		$sql = "SELECT * FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
-
+		$sql = "SELECT *, p.product_id FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id)";
+    $sql .= " LEFT JOIN " . DB_PREFIX . "product_highlight ph ON (p.product_id = ph.product_id)";
+    $sql .=" WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+    
+		if (!empty($data['filter_highlight']) && strlen($data['filter_highlight'][0]) > 0) {
+        $sql .= " AND ph.color IN ('" . implode("','", $data['filter_highlight']) . "')";
+        if ($data['filter_highlight'][0] == 'white') $sql .= " OR ph.color IS NULL"; 
+		}
 		if (!empty($data['filter_name'])) {
 			$sql .= " AND pd.name LIKE '" . $this->db->escape($data['filter_name']) . "%'";
 		}
@@ -633,9 +646,13 @@ class ModelCatalogProduct extends Model {
 
 	public function getTotalProducts($data = array()) {
 		$sql = "SELECT COUNT(DISTINCT p.product_id) AS total FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id)";
-    // echo "LIFE IS LIFE, NANA NA-RA-NA";
+    $sql .= " LEFT JOIN " . DB_PREFIX . "product_highlight ph ON (p.product_id = ph.product_id)";
 		$sql .= " WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
-
+    
+		if (!empty($data['filter_highlight']) && strlen($data['filter_highlight'][0]) > 0) {
+      $sql .= " AND ph.color IN ('" . implode("','", $data['filter_highlight']) . "')";
+    }
+    
 		if (!empty($data['filter_name'])) {
 			$sql .= " AND pd.name LIKE '" . $this->db->escape($data['filter_name']) . "%'";
 		}
