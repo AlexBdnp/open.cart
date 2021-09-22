@@ -34,6 +34,35 @@
           </div>
           <div class="panel-body">
             <div class="form-group">
+              <ul id="color_palette" style="display: flex; flex-wrap: wrap; gap: 5px; background-color: white; border: solid 0px grey;  list-style-type: none; padding: 0; ">
+                <li data-color="white" onclick="this.classList.toggle('selected');" style="background-color: white; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'white' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="beige" onclick="this.classList.toggle('selected');" style="background-color: beige; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'beige' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="lightgray" onclick="this.classList.toggle('selected');" style="background-color: lightgray; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'lightgray' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="salmon" onclick="this.classList.toggle('selected');" style="background-color: salmon; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'salmon' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="burlywood" onclick="this.classList.toggle('selected');" style="background-color: burlywood; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'burlywood' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="gold" onclick="this.classList.toggle('selected');" style="background-color: gold; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'gold' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="lightgreen" onclick="this.classList.toggle('selected');" style="background-color: lightgreen; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'lightgreen' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="lightskyblue" onclick="this.classList.toggle('selected');" style="background-color: lightskyblue; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'lightskyblue' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="orchid" onclick="this.classList.toggle('selected');" style="background-color: orchid; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'orchid' in selected_colors %} selected {%endif%}"></li>
+              </ul>
+              <input type="hidden" name="filter_highlight" value="[]">
+              <style>
+                .selected {
+                  border: solid 3px blue;
+                }
+              </style>
+              <script>
+                function refreshColorsInput() {
+                  let colors = "";
+                  document.querySelectorAll('#color_palette .selected').forEach(function(cv, ci, l){
+                      colors += cv.dataset.color + ','
+                  })
+                  colors = colors.slice(0, -1)
+                  document.querySelector('#color_palette ~ [name=filter_highlight]').value = colors
+                }
+              </script>
+            </div>
+            <div class="form-group">
               <label class="control-label" for="input-name">{{ entry_name }}</label>
               <input type="text" name="filter_name" value="{{ filter_name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control" />
             </div>
@@ -144,9 +173,9 @@
                   <thead>
                     <tr>
                       <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+                      <td class="text-center">Color</td>
                       <td class="text-center">{{ column_image }}</td>
                       <td class="text-left">{% if sort == 'pd.name' %} <a href="{{ sort_name }}" class="{{ order|lower }}">{{ column_name }}</a> {% else %} <a href="{{ sort_name }}">{{ column_name }}</a> {% endif %}</td>
-                      <td class="text-left">{% if sort == 'p.model' %} <a href="{{ sort_model }}" class="{{ order|lower }}">{{ column_model }}</a> {% else %} <a href="{{ sort_model }}">{{ column_model }}</a> {% endif %}</td>
                       <td class="text-right">{% if sort == 'p.price' %} <a href="{{ sort_price }}" class="{{ order|lower }}">{{ column_price }}</a> {% else %} <a href="{{ sort_price }}">{{ column_price }}</a> {% endif %}</td>
                       <td class="text-right">{% if sort == 'p.quantity' %} <a href="{{ sort_quantity }}" class="{{ order|lower }}">{{ column_quantity }}</a> {% else %} <a href="{{ sort_quantity }}">{{ column_quantity }}</a> {% endif %}</td>
                       <td class="text-left">{% if sort == 'p.status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
@@ -157,15 +186,30 @@
                   
                   {% if products %}
                   {% for product in products %}
-                  <tr>
+                  <tr data-color="1" style="background-color: {{ product.highlight }}">
                     <td class="text-center">{% if product.product_id in selected %}
                       <input type="checkbox" name="selected[]" value="{{ product.product_id }}" checked="checked" />
                       {% else %}
                       <input type="checkbox" name="selected[]" value="{{ product.product_id }}" />
                       {% endif %}</td>
+                    <td class="text-center">
+                      <div style="padding: 0 25%" onclick="event.preventDefault(); this.nextSibling.nextSibling.classList.toggle('invisible');">
+                        <div style="border: 1px solid slategrey; width: 3rem; height: 3rem;" onclick=""></div>
+                      </div>
+                      <ul style="width: calc(3vw + 15px); height: calc(3vw + 13px); display: flex; flex-wrap: wrap; position: absolute; background-color: white; border: solid 1px grey;  list-style-type: none; padding: 0; " class="invisible">
+                        <li data-color="white" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: white; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="beige" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: beige; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="lightgray" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: lightgray; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="salmon" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: salmon; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="burlywood" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: burlywood; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="gold" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: gold; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="lightgreen" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: lightgreen; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="lightskyblue" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: lightskyblue; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="orchid" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: orchid; width: 1vw; height: 1vw; margin: 2px; "></li>
+                      </ul>
+                    </td>
                     <td class="text-center">{% if product.image %} <img src="{{ product.image }}" alt="{{ product.name }}" class="img-thumbnail" /> {% else %} <span class="img-thumbnail list"><i class="fa fa-camera fa-2x"></i></span> {% endif %}</td>
                     <td class="text-left">{{ product.name }}</td>
-                    <td class="text-left">{{ product.model }}</td>
                     <td class="text-right">{% if product.special %} <span style="text-decoration: line-through;">{{ product.price }}</span><br/>
                       <div class="text-danger">{{ product.special }}</div>
                       {% else %}
@@ -176,6 +220,14 @@
                     <td class="text-right"><a href="{{ product.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
                   </tr>
                   {% endfor %}
+                  <script>
+                    function setColor(element, link) {
+                      const tr = element.parentElement.parentElement.parentElement
+                      tr.dataset.color= element.dataset.color
+                      tr.style.backgroundColor = element.style.backgroundColor
+                      fetch(link + element.style.backgroundColor)
+                    }
+                  </script>
                   {% else %}
                   <tr>
                     <td class="text-center" colspan="8">{{ text_no_results }}</td>
@@ -197,7 +249,15 @@
   </div>
   <script type="text/javascript"><!--
 $('#button-filter').on('click', function() {
+  refreshColorsInput();
+
 	var url = '';
+
+	var filter_highlight = $('input[name=\'filter_highlight\']').val();
+
+	if (filter_highlight != "[]") {
+		url += '&filter_highlight=' + encodeURIComponent(filter_highlight);
+	}
 
 	var filter_name = $('input[name=\'filter_name\']').val();
 

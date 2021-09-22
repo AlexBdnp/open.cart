@@ -1,5 +1,13 @@
 <?php
 class ControllerCatalogProduct extends Controller {
+
+  public function sethighlight()
+  {
+    $this->load->model('catalog/product');
+
+    $this->model_catalog_product->setHighlight($this->request->get['color'], $this->request->get['product_id']);
+  }
+
 	private $error = array();
 
 	public function index() {
@@ -225,6 +233,11 @@ class ControllerCatalogProduct extends Controller {
 	}
 
 	protected function getList() {
+    if (isset($this->request->get['filter_highlight'])) {
+			$filter_highlight = $this->request->get['filter_highlight'];
+		} else {
+			$filter_highlight = '';
+		}
 		if (isset($this->request->get['filter_name'])) {
 			$filter_name = $this->request->get['filter_name'];
 		} else {
@@ -275,6 +288,10 @@ class ControllerCatalogProduct extends Controller {
 
 		$url = '';
 
+		if (isset($this->request->get['filter_highlight'])) {
+			$url .= '&filter_highlight=' . urlencode(html_entity_decode($this->request->get['filter_highlight'], ENT_QUOTES, 'UTF-8'));
+		}
+
 		if (isset($this->request->get['filter_name'])) {
 			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 		}
@@ -320,8 +337,9 @@ class ControllerCatalogProduct extends Controller {
 		$data['delete'] = $this->url->link('catalog/product/delete', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
 		$data['products'] = array();
-
+    
 		$filter_data = array(
+			'filter_highlight'	  => explode(',', $filter_highlight),
 			'filter_name'	  => $filter_name,
 			'filter_model'	  => $filter_model,
 			'filter_price'	  => $filter_price,
@@ -359,15 +377,16 @@ class ControllerCatalogProduct extends Controller {
 			}
 
 			$data['products'][] = array(
+        'highlight'  => isset($result['color']) ? $result['color'] : "",
 				'product_id' => $result['product_id'],
 				'image'      => $image,
 				'name'       => $result['name'],
-				'model'      => $result['model'],
 				'price'      => $this->currency->format($result['price'], $this->config->get('config_currency')),
 				'special'    => $special,
 				'quantity'   => $result['quantity'],
 				'status'     => $result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),
-				'edit'       => $this->url->link('catalog/product/edit', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $result['product_id'] . $url, true)
+				'edit'       => $this->url->link('catalog/product/edit', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $result['product_id'] . $url, true),
+				'sethighlight'=> $this->url->link('catalog/product/sethighlight', 'user_token=' . $this->session->data['user_token'] . '&product_id=' . $result['product_id'] . $url . '&color=', true)
 			);
 		}
 
@@ -472,6 +491,7 @@ class ControllerCatalogProduct extends Controller {
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($product_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($product_total - $this->config->get('config_limit_admin'))) ? $product_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $product_total, ceil($product_total / $this->config->get('config_limit_admin')));
 
+    $data['selected_colors'] = explode(',', $filter_highlight);
 		$data['filter_name'] = $filter_name;
 		$data['filter_model'] = $filter_model;
 		$data['filter_price'] = $filter_price;
