@@ -44,6 +44,15 @@
                 <li onclick="this.classList.toggle('selected');" style="min-width: 20px; width: 1vw; min-height: 20px; height: 1vw;  background-color: lightgreen; " class="{% if 'lightgreen' in selected_colors %} selected {%endif%}"></li>
                 <li onclick="this.classList.toggle('selected');" style="min-width: 20px; width: 1vw; min-height: 20px; height: 1vw;  background-color: lightskyblue; " class="{% if 'lightskyblue' in selected_colors %} selected {%endif%}"></li>
                 <li onclick="this.classList.toggle('selected');" style="min-width: 20px; width: 1vw; min-height: 20px; height: 1vw;  background-color: orchid; " class="{% if 'orchid' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="white" onclick="this.classList.toggle('selected');" style="background-color: white; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'white' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="beige" onclick="this.classList.toggle('selected');" style="background-color: beige; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'beige' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="lightgray" onclick="this.classList.toggle('selected');" style="background-color: lightgray; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'lightgray' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="salmon" onclick="this.classList.toggle('selected');" style="background-color: salmon; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'salmon' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="burlywood" onclick="this.classList.toggle('selected');" style="background-color: burlywood; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'burlywood' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="gold" onclick="this.classList.toggle('selected');" style="background-color: gold; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'gold' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="lightgreen" onclick="this.classList.toggle('selected');" style="background-color: lightgreen; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'lightgreen' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="lightskyblue" onclick="this.classList.toggle('selected');" style="background-color: lightskyblue; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'lightskyblue' in selected_colors %} selected {%endif%}"></li>
+                <li data-color="orchid" onclick="this.classList.toggle('selected');" style="background-color: orchid; min-width: 20px; width: 1vw; min-height: 20px; height: 1vw; " class="{% if 'orchid' in selected_colors %} selected {%endif%}"></li>
               </ul>
               <input type="hidden" name="filter_highlight" value="[]">
               <style>
@@ -56,6 +65,7 @@
                   let colors = "";
                   document.querySelectorAll('#color_palette .selected').forEach(function(cv, ci, l){
                       colors += cv.style.backgroundColor + ','
+                      colors += cv.dataset.color + ','
                   })
                   colors = colors.slice(0, -1)
                   document.querySelector('#color_palette ~ [name=filter_highlight]').value = colors
@@ -206,6 +216,15 @@
                         <li onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: lightgreen; width: 1vw; height: 1vw; margin: 2px; "></li>
                         <li onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: lightskyblue; width: 1vw; height: 1vw; margin: 2px; "></li>
                         <li onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: orchid; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="white" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: white; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="beige" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: beige; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="lightgray" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: lightgray; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="salmon" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: salmon; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="burlywood" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: burlywood; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="gold" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: gold; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="lightgreen" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: lightgreen; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="lightskyblue" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: lightskyblue; width: 1vw; height: 1vw; margin: 2px; "></li>
+                        <li data-color="orchid" onclick="setColor(this, '{{ product.sethighlight |replace({'&amp;': '&'}) }}'); this.parentElement.classList.toggle('invisible')" style="background-color: orchid; width: 1vw; height: 1vw; margin: 2px; "></li>
                       </ul>
                     </td>
                     <td class="text-center">{% if product.image %} <img src="{{ product.image }}" alt="{{ product.name }}" class="img-thumbnail" /> {% else %} <span class="img-thumbnail list"><i class="fa fa-camera fa-2x"></i></span> {% endif %}</td>
@@ -223,6 +242,7 @@
                   <script>
                     function setColor(element, link) {
                       const tr = element.parentElement.parentElement.parentElement
+                      tr.dataset.color= element.dataset.color
                       tr.style.backgroundColor = element.style.backgroundColor
                       fetch(link + element.style.backgroundColor)
                     }

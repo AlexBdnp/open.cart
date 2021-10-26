@@ -1,3 +1,5 @@
 .vscode/*
 system/*
 config.php
+image/cache
+.gitignore
